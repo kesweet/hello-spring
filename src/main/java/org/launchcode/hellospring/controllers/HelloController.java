@@ -1,7 +1,12 @@
 package org.launchcode.hellospring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping
@@ -24,14 +29,14 @@ public class HelloController {
     }
 
     //handles request at path /childPath
-    @GetMapping()
-    @ResponseBody
-    public String hello() {
-        return "Hello, Spring!";
+    @RequestMapping(value = "hello", method = {RequestMethod.GET, RequestMethod.POST})
+    public String hello(@RequestParam String name, Model model) {
+        model.addAttribute("greeting", "Hello " + name + "!");
+        return "hello";
     }
 
     //create a handler to handle query requests /hello?name=userInput
-    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, value = "hello")
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, value = "helloForm")
     @ResponseBody
     public String helloWithQueryParam(@RequestParam String name, @RequestParam String language) {
         return createMessage(name, language);
@@ -42,6 +47,16 @@ public class HelloController {
     @GetMapping("form")
     public String helloForm() {
         return "form";
+    }
+
+    @GetMapping("hello-names")
+    public String helloNames(Model model) {
+        List<String> names = new ArrayList<String>();
+        names.add("LaunchCode");
+        names.add("Java");
+        names.add("Python");
+        model.addAttribute("names", names);
+        return "hello-list";
     }
 
 }
